@@ -128,7 +128,7 @@
 #define SDL_THREADS_DISABLED    1
 
 /* Enable the stub timer support (src/timer/dummy/\*.c) */
-#define SDL_TIMERS_DISABLED 1
+#define SDL_TIMER_XBOX 1
 
 /* Enable the dummy video driver (src/video/dummy/\*.c) */
 #define SDL_VIDEO_DRIVER_XBOX  1
