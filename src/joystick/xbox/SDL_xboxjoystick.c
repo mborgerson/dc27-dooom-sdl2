@@ -47,6 +47,7 @@ void USBGetEvents(void);
 typedef struct joystick_hwdata
 {
     XPAD_INPUT *padData;
+    int button_track[NUM_BUTTONS];
 } joystick_hwdata, *pjoystick_hwdata;
 
 static int SDL_XBOX_JoystickInit(void) {
@@ -140,18 +141,20 @@ static bool digitalButtonPressed(SDL_Joystick *joystick, int button_bit) {
 static void analogButtonUpdate(SDL_Joystick *joystick, int button, int index) {
     assert(index >= 0);
     assert(index <= NUM_BUTTONS);
-    if (analogButtonPressed(joystick, button) != joystick->buttons[index]) {
+    if (analogButtonPressed(joystick, button) != joystick->hwdata->button_track[index]) {
         SDL_PrivateJoystickButton(joystick, (Uint8)index,
-                                  joystick->buttons[index] ? SDL_RELEASED : SDL_PRESSED);
+                                  analogButtonPressed(joystick, button) ? SDL_PRESSED : SDL_RELEASED);
+        joystick->hwdata->button_track[index] = analogButtonPressed(joystick, button);
     }
 }
 
 static void digitalButtonUpdate(SDL_Joystick *joystick, int button, int index) {
     assert(index >= 0);
     assert(index <= NUM_BUTTONS);
-    if (digitalButtonPressed(joystick, button) != joystick->buttons[index]) {
+    if (digitalButtonPressed(joystick, button) != joystick->hwdata->button_track[index]) {
         SDL_PrivateJoystickButton(joystick, (Uint8)index,
-                                  joystick->buttons[index] ? SDL_RELEASED : SDL_PRESSED);
+                                  digitalButtonPressed(joystick, button) ? SDL_PRESSED : SDL_RELEASED);
+        joystick->hwdata->button_track[index] = digitalButtonPressed(joystick, button);
     }
 }
 
